@@ -1,0 +1,14 @@
+{
+  "description": "Videokub.com",
+  "author": "Wain",
+  "homepage": "http://github.com/Wain-PC",
+  "title": "Videokub",
+  "synopsis": "Videokub.com",
+  "version": "0.1.1",
+  "file": "index.js",
+  "showtimeVersion": "4.9.389",
+  "type": "ecmascript",
+  "icon": "logo.png",
+  "id": "videokub",
+  "category": "video"
+}
