@@ -160,19 +160,27 @@ plugin.addURI(PREFIX + ":item:(.*):(.*)", function (page, reqUrl, title) {
     setPageHeader(page, title);
     reqUrl = decodeURIComponent(reqUrl);
     var response = makeRequest(page, reqUrl),
-        iframeUrl, iframeResponse, url, paramsRegExp = /var params = ([\w\W]*)};/gm, params, i, length;
+        iframeUrl, iframeResponse, url, paramsRegExp = /var params = ([\w\W]*)};/gm, params, i, length,
+        youtubeRegExp = /youtube\.com\/embed\/(\w+)/;
 
     page.loading = true;
 
     //Step 1. Find "iframe" element and load it
     iframeUrl = response.getElementByTagName("iframe")[0].attributes[2].value;
     iframeResponse = makeRequest(page, iframeUrl, null, true);
+
+    //Check for youTube video. If found, redirect to youTube plugin
+    params = youtubeRegExp.exec(iframeResponse.text);
+    if (params && params[1]) {
+        return page.redirect("youtube:video:" + params[1]);
+    }
+
     params = paramsRegExp.exec(iframeResponse.text)[0].replace(/(?:\r\n|\r|\n)/g, '');
     eval(params);
     params = params.playlist;
     length = params.length;
 
-    if(length === 1) {
+    if (length === 1) {
         return page.redirect(PREFIX + ':play:' + encodeURIComponent(params[0].video[0].url) + ':' + encodeURIComponent(params[0].title) + ':' + encodeURIComponent(params[0].posterUrl));
     }
 
